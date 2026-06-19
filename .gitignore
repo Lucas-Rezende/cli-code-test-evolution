@@ -1,0 +1,15 @@
+.vscode
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ambientes Virtuais
+.venv/
+venv/
+ENV/
+
+# Arquivos de Configuração / Segredos
+.env
