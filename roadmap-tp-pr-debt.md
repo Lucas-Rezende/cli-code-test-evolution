@@ -344,7 +344,7 @@ def print_report(repo: str, pr_number: int, result: dict, as_json: bool = False)
         ))
 ```
 
-- [ ] **[P3]** Commit: `feat: implementa print_report com Rich em reporter.py`
+- [V] **[P3]** Commit: `feat: implementa print_report com Rich em reporter.py`
 - [ ] **[P3]** Commit: `feat: adiciona flag --json para output em JSON no reporter`
 
 ### 3.2 Módulo `main.py` — Responsabilidade: P1
@@ -432,7 +432,7 @@ def make_mock_file(filename: str, patch: str | None) -> MagicMock:
 
 ### 4.2 Testes de `line_counter.py` — `tests/test_line_counter.py`
 
-- [ ] **[P3]** **Teste 1:** Linha de código válida é contada
+- [V] **[P3]** **Teste 1:** Linha de código válida é contada
 
 ```python
 def test_conta_linha_de_codigo():
@@ -440,9 +440,9 @@ def test_conta_linha_de_codigo():
     assert count_effective_lines(patch) == 1
 ```
 
-- [ ] **[P3]** Commit: `test: testa contagem de linha de código válida`
+- [V] **[P3]** Commit: `test: testa contagem de linha de código válida`
 
-- [ ] **[P3]** **Teste 2:** Comentário Python é ignorado
+- [V] **[P3]** **Teste 2:** Comentário Python é ignorado
 
 ```python
 def test_ignora_comentario():
@@ -450,7 +450,7 @@ def test_ignora_comentario():
     assert count_effective_lines(patch) == 0
 ```
 
-- [ ] **[P3]** **Teste 3:** Linha em branco é ignorada
+- [V] **[P3]** **Teste 3:** Linha em branco é ignorada
 
 ```python
 def test_ignora_linha_em_branco():
@@ -458,7 +458,7 @@ def test_ignora_linha_em_branco():
     assert count_effective_lines(patch) == 0
 ```
 
-- [ ] **[P3]** **Teste 4:** Cabeçalho do diff é ignorado
+- [V] **[P3]** **Teste 4:** Cabeçalho do diff é ignorado
 
 ```python
 def test_ignora_cabecalho_diff():
@@ -466,14 +466,14 @@ def test_ignora_cabecalho_diff():
     assert count_effective_lines(patch) == 1
 ```
 
-- [ ] **[P3]** **Teste 5:** Patch `None` retorna zero (arquivo binário)
+- [V] **[P3]** **Teste 5:** Patch `None` retorna zero (arquivo binário)
 
 ```python
 def test_patch_none_retorna_zero():
     assert count_effective_lines(None) == 0
 ```
 
-- [ ] **[P3]** **Teste 6:** Linhas removidas (`-`) não são contadas
+- [V] **[P3]** **Teste 6:** Linhas removidas (`-`) não são contadas
 
 ```python
 def test_nao_conta_linhas_removidas():
@@ -481,32 +481,32 @@ def test_nao_conta_linhas_removidas():
     assert count_effective_lines(patch) == 0
 ```
 
-- [ ] **[P3]** Commit: `test: adiciona testes 2-6 para line_counter.py`
+- [V] **[P3]** Commit: `test: adiciona testes 2-6 para line_counter.py`
 
 ### 4.3 Testes de `analyzer.py` — `tests/test_analyzer.py`
 
-- [ ] **[P3]** **Teste 7:** `is_test_file` detecta diretório `tests/`
+- [V] **[P3]** **Teste 7:** `is_test_file` detecta diretório `tests/`
 
 ```python
 def test_is_test_file_por_diretorio():
     assert is_test_file("tests/test_main.py") is True
 ```
 
-- [ ] **[P3]** **Teste 8:** `is_test_file` detecta sufixo `_test.py`
+- [V] **[P3]** **Teste 8:** `is_test_file` detecta sufixo `_test.py`
 
 ```python
 def test_is_test_file_por_sufixo():
     assert is_test_file("src/utils_test.py") is True
 ```
 
-- [ ] **[P3]** **Teste 9:** `is_test_file` retorna `False` para arquivo normal
+- [V] **[P3]** **Teste 9:** `is_test_file` retorna `False` para arquivo normal
 
 ```python
 def test_is_test_file_arquivo_normal():
     assert is_test_file("pr_debt_scanner/analyzer.py") is False
 ```
 
-- [ ] **[P3]** Commit: `test: adiciona testes 7-9 para is_test_file`
+- [V] **[P3]** Commit: `test: adiciona testes 7-9 para is_test_file`
 
 - [ ] **[P3]** **Teste 10:** `analyze_pr` detecta dívida quando há código sem testes
 
@@ -532,7 +532,7 @@ def test_analyze_pr_sem_divida_com_testes():
     assert result["has_test_changes"] is True
 ```
 
-- [ ] **[P3]** Commit: `test: adiciona testes 10-11 para analyze_pr`
+- [V] **[P3]** Commit: `test: adiciona testes 10-11 para analyze_pr`
 
 - [ ] **[P3]** **Teste 12 (bônus):** `analyze_pr` não detecta dívida quando código está abaixo do threshold
 
@@ -543,7 +543,7 @@ def test_analyze_pr_sem_divida_abaixo_threshold():
     assert result["has_debt"] is False
 ```
 
-- [ ] **[P3]** Commit: `test: adiciona teste de bônus (threshold não atingido)`
+- [V] **[P3]** Commit: `test: adiciona teste de bônus (threshold não atingido)`
 
 ### 4.4 Verificação Local dos Testes
 
