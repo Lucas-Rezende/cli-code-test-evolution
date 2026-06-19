@@ -11,3 +11,16 @@ Após análise, a abordagem será focada em detectar Dívida de Testes em Pull R
 ## Possíveis tecnologias utilizadas
 PyGithub (ou semelhantes), visando dar get nos artefatos necessários, oriundos do GitHub.
 Os artefatos analisados serão, em suma, pull requests, linhas de código (e seu tipo, caso sejam apenas comentários, poderia ser utilizado o tree-sitter para diferenciar) e testes (quantidade de funções/métodos de teste e linhas de código de teste). Para o CLI, a princípio será utilizado o typer.
+
+
+## 4 - Como executar:
+  Crie uma máquina virtual
+  ```bash
+  python -m venv venv 
+  source venv/bin/activate
+  ```
+
+  Atualmente para rodar o único teste que funciona:
+  ```bash
+  python3 -m unittest tests/test_line_counter.py
+  ```
