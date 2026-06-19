@@ -12,26 +12,26 @@ def make_mock_file(filename: str, patch: str | None) -> MagicMock:
 
 class TestLineCounter(unittest.TestCase):
 
-    def test_conta_linha_de_codigo():
+    def test_conta_linha_de_codigo(self):
         patch = "+x = 1\n"
         assert count_effective_lines(patch) == 1
 
-    def test_ignora_comentario():
+    def test_ignora_comentario(self):
         patch = "+# isso é um comentário\n"
         assert count_effective_lines(patch) == 0
 
-    def test_ignora_linha_em_branco():
+    def test_ignora_linha_em_branco(self):
         patch = "+\n+   \n"
         assert count_effective_lines(patch) == 0
 
-    def test_ignora_cabecalho_diff():
+    def test_ignora_cabecalho_diff(self):
         patch = "+++ b/arquivo.py\n+x = 1\n"
         assert count_effective_lines(patch) == 1
 
-    def test_patch_none_retorna_zero():
+    def test_patch_none_retorna_zero(self):
         assert count_effective_lines(None) == 0
 
-    def test_nao_conta_linhas_removidas():
+    def test_nao_conta_linhas_removidas(self):
         patch = "-x = 1\n"
         assert count_effective_lines(patch) == 0
 
