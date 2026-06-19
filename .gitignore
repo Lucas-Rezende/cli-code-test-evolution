@@ -13,3 +13,6 @@ ENV/
 
 # Arquivos de Configuração / Segredos
 .env
+
+# Arquivos gerados pelo pip
+*.egg-info/
