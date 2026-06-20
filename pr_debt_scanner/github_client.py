@@ -1,6 +1,6 @@
 # pr_debt_scanner/github_client.py
 import os
-from github import Github, GithubException
+from github import Github, GithubException, Auth
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -14,7 +14,8 @@ def get_github_client() -> Github:
             "Variável GITHUB_TOKEN não encontrada. "
             "Crie um arquivo .env com GITHUB_TOKEN=seu_token."
         )
-    return Github(token)
+    auth = Auth.Token(token)
+    return Github(auth=auth)
 
 
 def get_pr_files(repo_name: str, pr_number: int) -> list:
