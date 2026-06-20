@@ -36,3 +36,5 @@ def scan(
     files = get_pr_files(repo, pr_number)
     result = analyze_pr(files, threshold=threshold)
     print_report(repo, pr_number, result, as_json=as_json)
+    if result["has_debt"]:
+        raise typer.Exit(code=1)  # exit code 1 sinaliza problema (útil em CI)
