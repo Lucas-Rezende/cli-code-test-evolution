@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PR Debt Scanner · octocat/Hello-World</title>
+<style>
+:root{--bg:#f5f7fb;--surface:#fff;--text:#172033;--muted:#667085;--line:#e4e7ec;--red:#d92d20;--red-bg:#fef3f2;--green:#067647;--green-bg:#ecfdf3;--blue:#175cd3;--blue-bg:#eff8ff;--amber:#b54708;--amber-bg:#fffaeb}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,Segoe UI,Arial,sans-serif}
+main{max-width:1180px;margin:auto;padding:42px 24px 70px} h1{font-size:32px;margin:0 0 6px} h2{margin-top:36px} p{color:var(--muted)}
+.eyebrow{color:#6941c6;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:12px}
+.notice{background:#fff8e7;border-left:4px solid #f79009;padding:12px 16px;color:#7a2e0e;border-radius:8px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:24px 0} .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 1px 2px #1018280a} .card strong{display:block;font-size:28px} .card span{color:var(--muted)}
+.distribution{height:16px;background:#e9edf3;border-radius:999px;overflow:hidden;display:flex} .distribution span{height:100%} .green{background:#12b76a} .red{background:#f04438} .blue{background:#2e90fa} .gray{background:#98a2b3}
+.legend{display:flex;gap:22px;flex-wrap:wrap;list-style:none;padding:0} .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}
+.table-wrap{overflow-x:auto} table{width:100%;border-collapse:collapse;background:var(--surface)} th,td{padding:13px 12px;text-align:left;border-bottom:1px solid var(--line)} th{font-size:12px;text-transform:uppercase;color:var(--muted)} td small{display:block;color:var(--muted);max-width:330px} td span{color:var(--muted)} .number{font-variant-numeric:tabular-nums;text-align:right}
+.pill{display:inline-block;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap} .risk-high,.risk-medium,.classification-possible_debt{color:var(--red);background:var(--red-bg)} .risk-low,.risk-review,.risk-attention,.classification-accompanied_attention{color:var(--amber);background:var(--amber-bg)} .risk-none,.classification-accompanied{color:var(--green);background:var(--green-bg)} .classification-tests_only{color:var(--blue);background:var(--blue-bg)} .classification-neutral{color:#475467;background:#f2f4f7}
+details{background:#fff;border:1px solid var(--line);border-radius:12px;margin:12px 0;overflow:hidden} summary{cursor:pointer;padding:17px;display:flex;justify-content:space-between;gap:12px} .detail-body{border-top:1px solid var(--line);padding:4px 17px 17px} .metrics{font-family:ui-monospace,Consolas,monospace} code{font-size:12px} .warning{display:block;color:var(--amber);font-size:12px}
+footer{margin-top:36px;color:var(--muted);font-size:13px}
+@media(max-width:760px){.cards{grid-template-columns:repeat(2,1fr)} main{padding:26px 14px}}
+</style>
+</head>
+<body><main>
+  <div class="eyebrow">Análise estrutural de Pull Requests</div>
+  <h1>octocat/Hello-World</h1>
+  <p>PR #10068 · filtro de estado: all</p>
+  <p class="notice"><strong>O que este relatório prova:</strong> se mudanças efetivas em código Python foram acompanhadas por mudanças efetivas em arquivos de teste. Ele não executa os testes, não mede cobertura e não prova a qualidade ou relação contextual dos testes.</p>
+  
+  <section class="cards">
+    <div class="card"><strong>1</strong><span>PRs analisados</span></div>
+    <div class="card"><strong>0</strong><span>possíveis dívidas</span></div>
+    <div class="card"><strong>+0 / -0</strong><span>LOC de código</span></div>
+    <div class="card"><strong>+0 / -0</strong><span>LOC de teste</span></div>
+  </section>
+  <section>
+    <h2>Visão geral</h2>
+    <div class="distribution"><span class="gray" style="width:100.00%"></span></div>
+    <ul class="legend"><li><i class='green'></i>Acompanhados <strong>0</strong></li><li><i class='red'></i>Possíveis dívidas <strong>0</strong></li><li><i class='blue'></i>Somente testes <strong>0</strong></li><li><i class='gray'></i>Neutros <strong>1</strong></li></ul>
+  </section>
+  <section>
+    <h2>Ranking de atenção</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>PR</th><th>Código + / -</th><th>Testes + / -</th><th>Classificação</th><th>Risco</th><th>Score</th></tr></thead>
+      <tbody>
+    <tr>
+      <td><a href="https://github.com/octocat/Hello-World/pull/10068">#10068</a><small>test</small></td>
+      <td class="number">+0<br><span>-0</span></td>
+      <td class="number">+0<br><span>-0</span></td>
+      <td><span class="pill classification-neutral">Neutro</span></td>
+      <td><span class="pill risk-none">Nenhum</span></td>
+      <td class="number">0</td>
+    </tr></tbody>
+    </table></div>
+  </section>
+  <section>
+    <h2>Detalhes auditáveis</h2>
+    
+    <details>
+      <summary>
+        <strong>#10068 · test</strong>
+        <span class="pill risk-none">Nenhum</span>
+      </summary>
+      <div class="detail-body">
+        <p><strong>Por quê:</strong> O PR não alterou linhas efetivas de código Python nem de testes.</p>
+        <p><strong>Recomendação:</strong> Não há nenhuma ação relacionada a testes para este PR.</p>
+        <p class="metrics">Código líquido +0, churn 0 ·
+        Testes líquidos +0, churn 0</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Arquivo</th><th>Tipo</th><th>Status</th><th>+LOC</th><th>-LOC</th><th>Líquido</th><th>Churn</th></tr></thead>
+          <tbody><tr><td colspan="7">Nenhum arquivo Python relevante.</td></tr></tbody>
+        </table></div>
+      </div>
+    </details>
+  </section>
+  <footer>Gerado em 2026-06-21T22:31:33.496790+00:00. LOC efetivas ignoram linhas vazias, comentários e docstrings Python reconhecidas.</footer>
+</main></body></html>

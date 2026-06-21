@@ -1,3 +1,4 @@
+# cli_code_test_evolution/line_counter.py
 from __future__ import annotations
 
 import ast
@@ -7,7 +8,7 @@ from dataclasses import dataclass, field
 
 from unidiff import PatchSet
 
-from pr_debt_scanner.models import IgnoredLines
+from cli_code_test_evolution.models import IgnoredLines
 
 @dataclass
 class PythonPatchMetrics:

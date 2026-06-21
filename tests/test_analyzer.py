@@ -1,12 +1,12 @@
 import unittest
 
-from pr_debt_scanner.analyzer import (
+from cli_code_test_evolution.analyzer import (
     analyze_pr,
     classify_python_file,
     is_test_file,
     rank_pull_requests,
 )
-from pr_debt_scanner.models import FileMetrics
+from cli_code_test_evolution.models import FileMetrics
 
 def make_mock_file(
     filename: str,
@@ -44,7 +44,7 @@ class TestFindTestsFiles(unittest.TestCase):
         assert is_test_file("src/utils_test.py") is True
 
     def test_is_test_file_arquivo_normal(self):
-        assert is_test_file("pr_debt_scanner/analyzer.py") is False
+        assert is_test_file("cli_code_test_evolution/analyzer.py") is False
 
     def test_classifica_arquivos_python(self):
         assert classify_python_file("src/service.py") == "code"

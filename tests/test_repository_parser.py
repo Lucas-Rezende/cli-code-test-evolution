@@ -1,6 +1,6 @@
 import pytest
 
-from pr_debt_scanner.repository_parser import (
+from cli_code_test_evolution.repository_parser import (
     RepositoryInputError,
     normalize_repository,
     parse_pr_range,

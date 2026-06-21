@@ -1,21 +1,21 @@
-# pr_debt_scanner/main.py
+# cli_code_test_evolution/main.py
 from __future__ import annotations
 
 from pathlib import Path
 
 import typer
 
-from pr_debt_scanner.github_client import GitHubClientError
-from pr_debt_scanner.reporter import print_report, write_html_report
-from pr_debt_scanner.repository_parser import (
+from cli_code_test_evolution.github_client import GitHubClientError
+from cli_code_test_evolution.reporter import print_report, write_html_report
+from cli_code_test_evolution.repository_parser import (
     RepositoryInputError,
     normalize_repository,
     validate_selection,
 )
-from pr_debt_scanner.scanner import scan_repository
+from cli_code_test_evolution.scanner import scan_repository
 
 app = typer.Typer(
-    name="pr-debt",
+    name="code-test-evo",
     help="Detecta dívida de testes em Pull Requests do GitHub.",
     add_completion=False,
 )
@@ -91,7 +91,7 @@ def scan(
         help="LOC adicionadas sem testes para risco alto.",
     ),
     output: Path = typer.Option(
-        Path("pr-debt-report.html"),
+        Path("code-test-evo-report.html"),
         "--output",
         "-o",
         help="Caminho do relatório HTML.",
@@ -117,7 +117,7 @@ def scan_repo(
     state: str = typer.Option("all", "--state"),
     medium_threshold: int = typer.Option(10, "--medium-threshold", min=1),
     high_threshold: int = typer.Option(50, "--high-threshold", min=2),
-    output: Path = typer.Option(Path("pr-debt-report.html"), "--output", "-o"),
+    output: Path = typer.Option(Path("code-test-evo-report.html"), "--output", "-o"),
     as_json: bool = typer.Option(False, "--json"),
 ) -> None:
     """Alias de compatibilidade para scan REPOSITORY --all."""

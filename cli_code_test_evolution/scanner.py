@@ -1,11 +1,12 @@
+# cli_code_test_evolution/scanner.py
 from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
 
-from pr_debt_scanner.analyzer import (analyze_pr, classify_python_file, rank_pull_requests)
-from pr_debt_scanner.github_client import (get_file_content, get_pr_files, get_repository, select_pull_requests)
-from pr_debt_scanner.line_counter import analyze_python_patch
-from pr_debt_scanner.models import AnalysisReport, FileMetrics
+from cli_code_test_evolution.analyzer import (analyze_pr, classify_python_file, rank_pull_requests)
+from cli_code_test_evolution.github_client import (get_file_content, get_pr_files, get_repository, select_pull_requests)
+from cli_code_test_evolution.line_counter import analyze_python_patch
+from cli_code_test_evolution.models import AnalysisReport, FileMetrics
 
 def _analyze_file(repository: Any, pull_request: Any, changed_file: Any) -> FileMetrics | None:
     filename = changed_file.filename

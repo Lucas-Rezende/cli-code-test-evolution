@@ -1,7 +1,7 @@
 import unittest
 from difflib import unified_diff
 
-from pr_debt_scanner.line_counter import (
+from cli_code_test_evolution.line_counter import (
     analyze_python_patch,
     count_effective_lines,
 )

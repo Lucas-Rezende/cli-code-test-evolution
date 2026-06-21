@@ -16,9 +16,13 @@ ENV/
 
 # Arquivos gerados pelo pip
 *.egg-info/
+build/
 
 # Informações locais de cobertura
 .coverage
 coverage.xml
-.pr-debt-reports/
+.cli-code-test-evolution-reports/
 .validation/
+
+# Cache pytest
+.pytest_cache/

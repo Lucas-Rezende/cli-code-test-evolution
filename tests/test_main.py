@@ -2,8 +2,8 @@ from pathlib import Path
 
 from typer.testing import CliRunner
 
-from pr_debt_scanner.main import app
-from pr_debt_scanner.models import AnalysisReport
+from cli_code_test_evolution.main import app
+from cli_code_test_evolution.models import AnalysisReport
 
 runner = CliRunner()
 
@@ -25,7 +25,7 @@ def test_scan_accepts_repository_and_specific_pr(monkeypatch, tmp_path):
         captured.update(repository=repository, kind=kind, value=value)
         return empty_report()
 
-    monkeypatch.setattr("pr_debt_scanner.main.scan_repository", fake_scan)
+    monkeypatch.setattr("cli_code_test_evolution.main.scan_repository", fake_scan)
     output = tmp_path / "report.html"
 
     result = runner.invoke(
@@ -46,7 +46,7 @@ def test_scan_accepts_direct_pr_url(monkeypatch, tmp_path):
         captured.update(kind=kind, value=value)
         return empty_report()
 
-    monkeypatch.setattr("pr_debt_scanner.main.scan_repository", fake_scan)
+    monkeypatch.setattr("cli_code_test_evolution.main.scan_repository", fake_scan)
 
     result = runner.invoke(
         app,

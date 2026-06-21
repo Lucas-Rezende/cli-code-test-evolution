@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from pr_debt_scanner.scanner import scan_repository
+from cli_code_test_evolution.scanner import scan_repository
 
 
 def test_scanner_fetches_base_and_head_content_and_aggregates(monkeypatch):
@@ -24,20 +24,20 @@ def test_scanner_fetches_base_and_head_content_and_aggregates(monkeypatch):
     repository = object()
     calls = []
 
-    monkeypatch.setattr("pr_debt_scanner.scanner.get_repository", lambda name: repository)
+    monkeypatch.setattr("cli_code_test_evolution.scanner.get_repository", lambda name: repository)
     monkeypatch.setattr(
-        "pr_debt_scanner.scanner.select_pull_requests",
+        "cli_code_test_evolution.scanner.select_pull_requests",
         lambda *args: SimpleNamespace(pull_requests=[pr], skipped=[]),
     )
     monkeypatch.setattr(
-        "pr_debt_scanner.scanner.get_pr_files", lambda pull_request: [changed_file]
+        "cli_code_test_evolution.scanner.get_pr_files", lambda pull_request: [changed_file]
     )
 
     def content(repo, path, ref):
         calls.append((path, ref))
         return "x = 1\n" if ref == "base" else "x = 2\n"
 
-    monkeypatch.setattr("pr_debt_scanner.scanner.get_file_content", content)
+    monkeypatch.setattr("cli_code_test_evolution.scanner.get_file_content", content)
 
     report = scan_repository("o/r", "pr", 3)
 

@@ -1,7 +1,7 @@
-# pr_debt_scanner/analyzer.py
+# cli_code_test_evolution/analyzer.py
 from __future__ import annotations
 
-from pr_debt_scanner.models import FileMetrics, PullRequestMetrics
+from cli_code_test_evolution.models import FileMetrics, PullRequestMetrics
 
 _TEST_DIRS = frozenset({"test", "tests"})
 _EXCLUDED_DIRS = frozenset(
