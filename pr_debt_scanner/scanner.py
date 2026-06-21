@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from pr_debt_scanner.analyzer import (analyze_pr, classify_python_file, rank_pull_requests)
-from pr_debt_scanner.github_client import (get_file_content, get_pr_files_from_pr, get_repository, select_pull_requests)
+from pr_debt_scanner.github_client import (get_file_content, get_pr_files, get_repository, select_pull_requests)
 from pr_debt_scanner.line_counter import analyze_python_patch
 from pr_debt_scanner.models import AnalysisReport, FileMetrics
 
@@ -67,7 +67,7 @@ def scan_repository(
     for pull_request in selected.pull_requests:
         files = [
             result
-            for changed_file in get_pr_files_from_pr(pull_request)
+            for changed_file in get_pr_files(pull_request)
             if (result := _analyze_file(repository, pull_request, changed_file))
             is not None
         ]

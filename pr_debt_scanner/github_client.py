@@ -81,7 +81,7 @@ def select_pull_requests(
             skipped.append(number)
     return PullRequestSelection(pull_requests=pull_requests, skipped=skipped)
 
-def get_pr_files_from_pr(pull_request: Any) -> list[Any]:
+def get_pr_files(pull_request: Any) -> list[Any]:
     try:
         return list(pull_request.get_files())
     except GithubException as exc:
