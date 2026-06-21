@@ -25,3 +25,13 @@ dev = [
 
 [project.scripts]
 pr-debt = "pr_debt_scanner.main:app"
+
+[tool.pr_debt]
+stack = "python"
+prepare_commands = [
+    ["{python}", "-m", "pip", "install", "-e", ".[dev]"],
+]
+coverage_targets = ["pr_debt_scanner"]
+test_paths = ["tests"]
+pytest_args = ["-q", "-p", "no:cacheprovider"]
+fail_under = 80
