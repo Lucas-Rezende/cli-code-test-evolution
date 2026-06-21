@@ -180,16 +180,14 @@ def count_effective_lines(patch: str | None) -> int:
     if not patch:
         return 0
     
-    try:
-        added, _ = _changed_line_numbers(patch)
-    except Exception:
-        return 0
-
     raw_added = [
         line[1:]
         for line in patch.splitlines()
         if line.startswith("+") and not line.startswith("+++")
     ]
+    if not raw_added:
+        return 0
+
     synthetic = "\n".join(raw_added)
     effective, _ = _count(set(range(1, len(raw_added) + 1)), _line_kinds(synthetic))
-    return effective if added else 0
+    return effective
