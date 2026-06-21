@@ -72,37 +72,34 @@ def select_pull_requests(
             if exc.status == 404 and selection_kind == "range":
                 skipped.append(number)
                 continue
-            raise GitHubClientError(
-                f"Não foi possível acessar o PR #{number}: {_message(exc)}"
-            ) from exc
+            raise GitHubClientError(f"Não foi possível acessar o PR #{number}: {_message(exc)}") from exc
         if state == "all" or pr.state == state:
             pull_requests.append(pr)
         else:
             skipped.append(number)
     return PullRequestSelection(pull_requests=pull_requests, skipped=skipped)
 
-def get_pr_files_from_pr(pr: PullRequest) -> list:
-    return list(pr.get_files())
-
-def get_prs(repo_name: str, include_closeds: bool = False) -> Iterable[PullRequest]:
-    """
-    Busca a lista de Pull Requests de um repositório.
-
-    Args:
-        repo_name: No formato "owner/repo" (ex: "torvalds/linux")
-        include_closeds: True para incluir Pull Requests fechadas
-
-    Returns:
-        Lista de objetos PullRequestFile do PyGithub.
-
-    Raises:
-        SystemExit: Se o repo ou PR não existirem, ou o token for inválido.
-    """
+def get_pr_files_from_pr(pull_request: Any) -> list[Any]:
     try:
-        client = get_github_client()
-        repo = client.get_repo(repo_name)
-        state = 'all' if include_closeds else 'open'
-        return repo.get_pulls(state=state)
-    except GithubException as e:
-        raise SystemExit(
-            f"Erro ao acessar o GitHub: {e.data.get('message', str(e))}")
+        return list(pull_request.get_files())
+    except GithubException as exc:
+        raise GitHubClientError(f"Não foi possível obter os arquivos do PR: {_message(exc)}") from exc
+
+def get_file_content(repository: Any, path: str, ref: str) -> str | None:
+    try:
+        content_file = repository.get_contents(path, ref=ref)
+    except GithubException as exc:
+        if exc.status in {404, 422}:
+            return None
+        raise GitHubClientError(f"Não foi possível obter {path} em {ref}: {_message(exc)}") from exc
+
+    if isinstance(content_file, list):
+        return None
+    try:
+        if getattr(content_file, "decoded_content", None) is not None:
+            raw = content_file.decoded_content
+        else:
+            raw = base64.b64decode(content_file.content)
+        return raw.decode("utf-8")
+    except (UnicodeDecodeError, ValueError):
+        return None
