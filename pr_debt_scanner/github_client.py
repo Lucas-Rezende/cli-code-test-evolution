@@ -1,11 +1,13 @@
 # pr_debt_scanner/github_client.py
-import os
-from github import Github, GithubException, Auth
-from dotenv import load_dotenv
 from __future__ import annotations
+
+import base64
+import os
 from dataclasses import dataclass
 from typing import Any
-import base64
+
+from dotenv import load_dotenv
+from github import Auth, Github, GithubException
 
 load_dotenv()
 

@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 import ast
 import io
 import tokenize
 from dataclasses import dataclass, field
+
 from unidiff import PatchSet
-from __future__ import annotations
+
 from pr_debt_scanner.models import IgnoredLines
 
 @dataclass

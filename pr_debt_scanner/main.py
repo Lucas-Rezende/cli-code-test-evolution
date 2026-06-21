@@ -1,5 +1,10 @@
 # pr_debt_scanner/main.py
+from __future__ import annotations
+
+from pathlib import Path
+
 import typer
+
 from pr_debt_scanner.github_client import GitHubClientError
 from pr_debt_scanner.reporter import print_report, write_html_report
 from pr_debt_scanner.repository_parser import (
@@ -8,8 +13,6 @@ from pr_debt_scanner.repository_parser import (
     validate_selection,
 )
 from pr_debt_scanner.scanner import scan_repository
-from __future__ import annotations
-from pathlib import Path
 
 app = typer.Typer(
     name="pr-debt",

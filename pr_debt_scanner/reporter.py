@@ -1,9 +1,12 @@
-import json
-from rich.console import Console
-from rich.table import Table
 from __future__ import annotations
+
+import json
 from html import escape
 from pathlib import Path
+
+from rich.console import Console
+from rich.table import Table
+
 from pr_debt_scanner.models import AnalysisReport, PullRequestMetrics
 
 _RISK_LABELS = {
