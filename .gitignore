@@ -16,3 +16,9 @@ ENV/
 
 # Arquivos gerados pelo pip
 *.egg-info/
+
+# Informações locais de cobertura
+.coverage
+coverage.xml
+.pr-debt-reports/
+.validation/
