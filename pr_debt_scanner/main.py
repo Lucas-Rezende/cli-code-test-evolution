@@ -1,8 +1,15 @@
 # pr_debt_scanner/main.py
 import typer
-from pr_debt_scanner.github_client import get_pr_files, get_prs, get_pr_files_from_pr
-from pr_debt_scanner.analyzer import analyze_pr
-from pr_debt_scanner.reporter import print_pr_report, print_prs_report
+from pr_debt_scanner.github_client import GitHubClientError
+from pr_debt_scanner.reporter import print_report, write_html_report
+from pr_debt_scanner.repository_parser import (
+    RepositoryInputError,
+    normalize_repository,
+    validate_selection,
+)
+from pr_debt_scanner.scanner import scan_repository
+from __future__ import annotations
+from pathlib import Path
 
 app = typer.Typer(
     name="pr-debt",
@@ -11,69 +18,117 @@ app = typer.Typer(
 )
 
 
+def _run_scan(
+    repository: str,
+    pr_number: int | None,
+    pr_range: str | None,
+    all_prs: bool,
+    state: str,
+    medium_threshold: int,
+    high_threshold: int,
+    output: Path,
+    as_json: bool,
+) -> None:
+    try:
+        reference = normalize_repository(repository)
+        selection_kind, selection_value = validate_selection(
+            reference.pr_number,
+            pr_number,
+            pr_range,
+            all_prs,
+        )
+        report = scan_repository(
+            reference.full_name,
+            selection_kind,
+            selection_value,
+            state=state,
+            medium_threshold=medium_threshold,
+            high_threshold=high_threshold,
+        )
+        report_path = write_html_report(report, output)
+    except (RepositoryInputError, GitHubClientError, ValueError) as exc:
+        typer.echo(f"Erro: {exc}", err=True)
+        raise typer.Exit(code=2) from exc
+
+    print_report(report, as_json=as_json)
+    if not as_json:
+        typer.echo(f"\nRelatório HTML: {report_path}")
+    if any(item.classification == "possible_debt" for item in report.pull_requests):
+        raise typer.Exit(code=1)
+
+
 @app.command()
 def scan(
     repo: str = typer.Argument(
         ...,
-        help="Repositório no formato owner/repo (ex: octocat/Hello-World)",
+        help="Repositório no formato owner/repo (ex: octocat/Hello-World) ou URL do repositório",
     ),
-    pr_number: int = typer.Argument(
-        ...,
-        help="Número do Pull Request a ser analisado",
+    pr_number: int | None = typer.Option(None, "--pr", help="Um PR específico."),
+    pr_range: str | None = typer.Option(
+        None,
+        "--range",
+        help="Intervalo inclusivo no formato START:END.",
     ),
-    threshold: int = typer.Option(
+    all_prs: bool = typer.Option(False, "--all", help="Analisa todos os PRs."),
+    state: str = typer.Option(
+        "all",
+        "--state",
+        help="Filtro de estado: open, closed ou all.",
+    ),
+    medium_threshold: int = typer.Option(
+        10,
+        "--medium-threshold",
+        min=1,
+        help="LOC adicionadas sem testes para risco médio.",
+    ),
+    high_threshold: int = typer.Option(
         50,
-        "--threshold", "-t",
-        help="Mínimo de linhas efetivas para emitir alerta de dívida",
+        "--high-threshold",
+        min=2,
+        help="LOC adicionadas sem testes para risco alto.",
     ),
-    as_json: bool = typer.Option(
-        False,
-        "--json",
-        help="Exibe o resultado em formato JSON",
+    output: Path = typer.Option(
+        Path("pr-debt-report.html"),
+        "--output",
+        "-o",
+        help="Caminho do relatório HTML.",
     ),
-):
-    """Analisa um Pull Request e detecta possível dívida de testes."""
-    files = get_pr_files(repo, pr_number)
-    result = analyze_pr(files, threshold=threshold)
-    print_pr_report(repo, pr_number, result, as_json=as_json)
-    if result["has_debt"]:
-        raise typer.Exit(code=1)  # exit code 1 sinaliza problema (útil em CI)
+    as_json: bool = typer.Option(False, "--json", help="Saída de terminal em JSON."),
+) -> None:
+    """Analisa um PR, um intervalo ou todos os PRs sem clonar o repositório."""
+    _run_scan(
+        repo,
+        pr_number,
+        pr_range,
+        all_prs,
+        state,
+        medium_threshold,
+        high_threshold,
+        output,
+        as_json,
+    )
 
-
-@app.command("scan-repo")
+@app.command("scan-repo", hidden=True)
 def scan_repo(
-    repo: str = typer.Argument(
-        ...,
-        help="Repositório no formato owner/repo (ex: octocat/Hello-World)",
-    ),
-    threshold: int = typer.Option(
-        50,
-        "--threshold", "-t",
-        help="Mínimo de linhas efetivas para emitir alerta de dívida",
-    ),
-    as_json: bool = typer.Option(
-        False,
-        "--json",
-        help="Exibe o resultado em formato JSON",
-    ),
-    include_closeds: bool = typer.Option(
-        False,
-        "--closed",
-        help="Inclui os Pull Requests fechadas",
-    ),
-):
-    """Analisa todas os Pull Requests e faz um ranking de possíveis dívidas de testes."""
-    prs = get_prs(repo, include_closeds=include_closeds)
-    results = []
-    for pr in prs:
-        files = get_pr_files_from_pr(pr)
-        result = analyze_pr(files, threshold=threshold)
-        results.append(
-            {
-                "state": pr.state,
-                "number": pr.number,
-                "result": result,
-            }
-        )
+    repository: str = typer.Argument(...),
+    state: str = typer.Option("all", "--state"),
+    medium_threshold: int = typer.Option(10, "--medium-threshold", min=1),
+    high_threshold: int = typer.Option(50, "--high-threshold", min=2),
+    output: Path = typer.Option(Path("pr-debt-report.html"), "--output", "-o"),
+    as_json: bool = typer.Option(False, "--json"),
+) -> None:
+    """Alias de compatibilidade para scan REPOSITORY --all."""
+    _run_scan(
+        repository,
+        None,
+        None,
+        True,
+        state,
+        medium_threshold,
+        high_threshold,
+        output,
+        as_json,
+    )
 
-    print_prs_report(repo, results, as_json=as_json)
+if __name__ == "__main__":
+    app()
