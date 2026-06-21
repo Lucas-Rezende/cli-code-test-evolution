@@ -1,8 +1,32 @@
 # pr_debt_scanner/analyzer.py
 from pr_debt_scanner.line_counter import count_effective_lines
 
-_TEST_DIRS = frozenset({"test", "tests", "spec", "specs"})
+_TEST_DIRS = frozenset({"test", "tests"})
+_EXCLUDED_DIRS = frozenset(
+    {
+        ".git",
+        ".venv",
+        "venv",
+        "env",
+        "__pycache__",
+        "build",
+        "dist",
+        "site-packages",
+    }
+)
 
+RISK_ORDER = {
+    "high": 7,
+    "medium": 6,
+    "attention": 5,
+    "review": 4,
+    "low": 3,
+    "none": 0,
+}
+
+
+def _parts(filename: str) -> list[str]:
+    return filename.replace("\\", "/").lower().split("/")
 
 def is_test_file(filename: str) -> bool:
     """
