@@ -16,6 +16,7 @@ ENV/
 
 # Arquivos gerados pelo pip
 *.egg-info/
+build/
 
 # Informações locais de cobertura
 .coverage
