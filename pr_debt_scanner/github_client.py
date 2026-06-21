@@ -28,32 +28,58 @@ def get_github_client() -> Github:
             "Variável GITHUB_TOKEN não encontrada. "
             "Crie um arquivo .env com GITHUB_TOKEN=seu_token."
         )
-    auth = Auth.Token(token)
-    return Github(auth=auth)
+    return Github(auth=Auth.Token(token))
 
-
-def get_pr_files(repo_name: str, pr_number: int) -> list:
-    """
-    Busca a lista de arquivos modificados em um Pull Request.
-
-    Args:
-        repo_name: No formato "owner/repo" (ex: "torvalds/linux")
-        pr_number: Número do PR (ex: 42)
-
-    Returns:
-        Lista de objetos PullRequestFile do PyGithub.
-
-    Raises:
-        SystemExit: Se o repo ou PR não existirem, ou o token for inválido.
-    """
+def get_repository(full_name: str, client: Github | None = None) -> Any:
     try:
-        client = get_github_client()
-        repo = client.get_repo(repo_name)
-        pr = repo.get_pull(pr_number)
-        return list(pr.get_files())
-    except GithubException as e:
-        raise SystemExit(
-            f"Erro ao acessar o GitHub: {e.data.get('message', str(e))}")
+        return (client or get_github_client()).get_repo(full_name)
+    except GithubException as exc:
+        raise GitHubClientError(
+            f"Não foi possível acessar {full_name}: {_message(exc)}"
+        ) from exc
+
+def select_pull_requests(
+    repository: Any,
+    selection_kind: str,
+    selection_value: int | tuple[int, int] | None,
+    state: str,
+) -> PullRequestSelection:
+    if state not in {"open", "closed", "all"}:
+        raise GitHubClientError("--state deve ser open, closed ou all.")
+
+    if selection_kind == "all":
+        try:
+            return PullRequestSelection(
+                pull_requests=list(repository.get_pulls(state=state)),
+                skipped=[],
+            )
+        except GithubException as exc:
+            raise GitHubClientError(
+                f"Não foi possível listar os PRs: {_message(exc)}"
+            ) from exc
+
+    numbers = (
+        [int(selection_value)]
+        if selection_kind == "pr"
+        else list(range(selection_value[0], selection_value[1] + 1))
+    )
+    pull_requests: list[Any] = []
+    skipped: list[int] = []
+    for number in numbers:
+        try:
+            pr = repository.get_pull(number)
+        except GithubException as exc:
+            if exc.status == 404 and selection_kind == "range":
+                skipped.append(number)
+                continue
+            raise GitHubClientError(
+                f"Não foi possível acessar o PR #{number}: {_message(exc)}"
+            ) from exc
+        if state == "all" or pr.state == state:
+            pull_requests.append(pr)
+        else:
+            skipped.append(number)
+    return PullRequestSelection(pull_requests=pull_requests, skipped=skipped)
 
 def get_pr_files_from_pr(pr: PullRequest) -> list:
     return list(pr.get_files())
