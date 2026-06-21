@@ -1,5 +1,6 @@
 # pr_debt_scanner/analyzer.py
-from pr_debt_scanner.line_counter import count_effective_lines
+from pr_debt_scanner.models import FileMetrics, PullRequestMetrics
+from __future__ import annotations
 
 _TEST_DIRS = frozenset({"test", "tests"})
 _EXCLUDED_DIRS = frozenset(
@@ -24,7 +25,6 @@ RISK_ORDER = {
     "none": 0,
 }
 
-
 def _parts(filename: str) -> list[str]:
     return filename.replace("\\", "/").lower().split("/")
 
@@ -36,12 +36,10 @@ def is_test_file(filename: str) -> bool:
       - src/test_utils.py
       - utils_test.py
     """
-    parts = filename.lower().split("/")
+    parts = _parts(filename)
     basename = parts[-1]
-    dirs = set(parts[:-1])
-
     return (
-        bool(dirs & _TEST_DIRS)          # está em diretório de teste
+        bool(set(parts[:-1]) & _TEST_DIRS)          # está em diretório de teste
         or basename.startswith("test_")  # nome começa com test_
         or basename.endswith("_test.py")  # nome termina com _test.py
     )
