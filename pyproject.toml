@@ -12,26 +12,14 @@ dependencies = [
     "PyGithub>=2.3",
     "python-dotenv>=1.0",
     "rich>=13.0",
-    "pytest>=8.0",
-    "pytest-cov>=6.0",
-    "diff-cover>=9.0",
-    "tomli>=2.0; python_version < '3.11'",
+    "unidiff>=0.7.5",
 ]
 
 [project.optional-dependencies]
 dev = [
+    "pytest>=8.0",
     "pytest-mock>=3.12",
 ]
 
 [project.scripts]
 pr-debt = "pr_debt_scanner.main:app"
-
-[tool.pr_debt]
-stack = "python"
-prepare_commands = [
-    ["{python}", "-m", "pip", "install", "-e", ".[dev]"],
-]
-coverage_targets = ["pr_debt_scanner"]
-test_paths = ["tests"]
-pytest_args = ["-q", "-p", "no:cacheprovider"]
-fail_under = 80
