@@ -1,18 +1,30 @@
 # pr_debt_scanner/github_client.py
 import os
 from github import Github, GithubException, Auth
-from github.PullRequest import PullRequest
 from dotenv import load_dotenv
-from typing import Iterable
+from __future__ import annotations
+from dataclasses import dataclass
+from typing import Any
+import base64
 
 load_dotenv()
 
+class GitHubClientError(RuntimeError):
+    """Erro de client durante uma consulta à API do GitHub."""
+
+@dataclass
+class PullRequestSelection:
+    pull_requests: list[Any]
+    skipped: list[int]
+
+def _message(exc: GithubException) -> str:
+    data = exc.data if isinstance(exc.data, dict) else {}
+    return str(data.get("message") or exc)
 
 def get_github_client() -> Github:
-    """Cria e retorna um cliente autenticado do PyGithub."""
     token = os.getenv("GITHUB_TOKEN")
     if not token:
-        raise EnvironmentError(
+        raise GitHubClientError(
             "Variável GITHUB_TOKEN não encontrada. "
             "Crie um arquivo .env com GITHUB_TOKEN=seu_token."
         )
