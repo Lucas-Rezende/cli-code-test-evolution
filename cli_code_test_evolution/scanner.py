@@ -3,6 +3,8 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
 
+from rich.progress import BarColumn, Progress, TaskProgressColumn, TextColumn
+
 from cli_code_test_evolution.analyzer import (analyze_pr, classify_python_file, rank_pull_requests)
 from cli_code_test_evolution.github_client import (get_file_content, get_pr_files, get_repository, select_pull_requests)
 from cli_code_test_evolution.line_counter import analyze_python_patch
@@ -51,7 +53,7 @@ def _analyze_file(repository: Any, pull_request: Any, changed_file: Any) -> File
 def scan_repository(
     repository_name: str,
     selection_kind: str,
-    selection_value: int | tuple[int, int] | None,
+    selection_value: int | tuple[int, int] | list[int] | None,
     *,
     state: str = "all",
     medium_threshold: int = 10,
@@ -65,30 +67,56 @@ def scan_repository(
         state,
     )
     results = []
-    for pull_request in selected.pull_requests:
-        files = [
-            result
-            for changed_file in get_pr_files(pull_request)
-            if (result := _analyze_file(repository, pull_request, changed_file))
-            is not None
-        ]
-        results.append(
-            analyze_pr(
-                number=pull_request.number,
-                title=pull_request.title,
-                state=pull_request.state,
-                url=pull_request.html_url,
-                author=getattr(pull_request.user, "login", "desconhecido"),
-                files=files,
-                medium_threshold=medium_threshold,
-                high_threshold=high_threshold,
+    if selected.pull_requests:
+        with Progress(
+            TextColumn("Analisando PRs"),
+            BarColumn(),
+            TaskProgressColumn(),
+            TextColumn("({task.completed}/{task.total})"),
+        ) as progress:
+            task = progress.add_task(
+                "Analisando PRs",
+                total=len(selected.pull_requests),
             )
-        )
+            for pull_request in selected.pull_requests:
+                files = [
+                    result
+                    for changed_file in get_pr_files(pull_request)
+                    if (
+                        result := _analyze_file(
+                            repository,
+                            pull_request,
+                            changed_file,
+                        )
+                    )
+                    is not None
+                ]
+                results.append(
+                    analyze_pr(
+                        number=pull_request.number,
+                        title=pull_request.title,
+                        state=pull_request.state,
+                        url=pull_request.html_url,
+                        author=getattr(
+                            pull_request.user,
+                            "login",
+                            "desconhecido",
+                        ),
+                        files=files,
+                        medium_threshold=medium_threshold,
+                        high_threshold=high_threshold,
+                    )
+                )
+                progress.advance(task)
 
     if selection_kind == "pr":
         selection_text = f"PR #{selection_value}"
     elif selection_kind == "range":
         selection_text = f"PRs #{selection_value[0]} a #{selection_value[1]}"
+    elif selection_kind == "list":
+        selection_text = "PRs " + ", ".join(
+            f"#{number}" for number in selection_value
+        )
     else:
         selection_text = f"todos os PRs ({state})"
 
