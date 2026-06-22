@@ -60,11 +60,14 @@ def select_pull_requests(
                 f"Não foi possível listar os PRs: {_message(exc)}"
             ) from exc
 
-    numbers = (
-        [int(selection_value)]
-        if selection_kind == "pr"
-        else list(range(selection_value[0], selection_value[1] + 1))
-    )
+    numbers = None
+    if selection_kind == "pr":
+        numbers = [int(selection_value)]
+    elif selection_kind == "range":
+        numbers = list(range(selection_value[0], selection_value[1] + 1))
+    else:
+        numbers = selection_value
+    
     pull_requests: list[Any] = []
     skipped: list[int] = []
     for number in numbers:

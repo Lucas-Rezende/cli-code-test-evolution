@@ -19,6 +19,7 @@ _RISK_LABELS = {
     "none": "Nenhum",
 }
 
+
 def _totals(report: AnalysisReport) -> dict[str, int]:
     prs = report.pull_requests
     return {
@@ -35,11 +36,8 @@ def _totals(report: AnalysisReport) -> dict[str, int]:
         "neutral": sum(item.classification == "neutral" for item in prs),
     }
 
-def print_report(report: AnalysisReport, *, as_json: bool = False) -> None:
-    if as_json:
-        print(json.dumps(report.to_dict(), ensure_ascii=False, indent=2))
-        return
 
+def print_report(report: AnalysisReport) -> None:
     console = Console()
     totals = _totals(report)
     console.print(
@@ -134,7 +132,7 @@ def write_html_report(report: AnalysisReport, output: str | Path) -> Path:
     denominator = max(totals["prs"], 1)
     distribution = [
         ("Acompanhados", totals["accompanied"], "green"),
-        ("Possíveis dívidas", totals["debt"], "red"),
+        ("Possíveis dívidas de teste", totals["debt"], "red"),
         ("Somente testes", totals["tests_only"], "blue"),
         ("Neutros", totals["neutral"], "gray"),
     ]
@@ -181,11 +179,11 @@ footer{{margin-top:36px;color:var(--muted);font-size:13px}}
   <div class="eyebrow">Análise estrutural de Pull Requests</div>
   <h1>{escape(report.repository)}</h1>
   <p>{escape(report.selection)} · filtro de estado: {escape(report.state_filter)}</p>
-  <p class="notice"><strong>O que este relatório prova:</strong> se mudanças efetivas em código Python foram acompanhadas por mudanças efetivas em arquivos de teste. Ele não executa os testes, não mede cobertura e não prova a qualidade ou relação contextual dos testes.</p>
+  <p class="notice"><strong>Atenção:</strong> este relatório atesta somente se mudanças efetivas em código Python foram acompanhadas por mudanças efetivas em arquivos de teste. Ele não executa os testes, não mede cobertura e não prova a qualidade ou relação contextual dos testes.</p>
   {skipped}
   <section class="cards">
     <div class="card"><strong>{totals['prs']}</strong><span>PRs analisados</span></div>
-    <div class="card"><strong>{totals['debt']}</strong><span>possíveis dívidas</span></div>
+    <div class="card"><strong>{totals['debt']}</strong><span>Possíveis dívidas de teste</span></div>
     <div class="card"><strong>+{totals['code_added']} / -{totals['code_removed']}</strong><span>LOC de código</span></div>
     <div class="card"><strong>+{totals['test_added']} / -{totals['test_removed']}</strong><span>LOC de teste</span></div>
   </section>
@@ -195,17 +193,25 @@ footer{{margin-top:36px;color:var(--muted);font-size:13px}}
     <ul class="legend">{legend}</ul>
   </section>
   <section>
-    <h2>Ranking de atenção</h2>
+    <h2>Ranking de Pull Requests analisados</h2>
     <div class="table-wrap"><table>
       <thead><tr><th>PR</th><th>Código + / -</th><th>Testes + / -</th><th>Classificação</th><th>Risco</th><th>Score</th></tr></thead>
       <tbody>{''.join(_pr_row(item) for item in report.pull_requests)}</tbody>
     </table></div>
   </section>
   <section>
-    <h2>Detalhes auditáveis</h2>
+    <h2>Detalhes das análises</h2>
     {''.join(_pr_details(item) for item in report.pull_requests)}
   </section>
   <footer>Gerado em {escape(report.generated_at)}. LOC efetivas ignoram linhas vazias, comentários e docstrings Python reconhecidas.</footer>
 </main></body></html>"""
     output_path.write_text(html, encoding="utf-8")
+    return output_path
+
+
+def write_json_report(report: AnalysisReport, output: str | Path) -> Path:
+    output_path = Path(output).expanduser().resolve()
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(report.to_dict(), f, ensure_ascii=False, indent=2)
+    
     return output_path
