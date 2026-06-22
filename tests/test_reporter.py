@@ -2,7 +2,11 @@ import json
 
 from cli_code_test_evolution.models import AnalysisReport, FileMetrics
 from cli_code_test_evolution.analyzer import analyze_pr
-from cli_code_test_evolution.reporter import print_report, write_html_report
+from cli_code_test_evolution.reporter import (
+    print_report,
+    write_html_report,
+    write_json_report,
+)
 
 
 def report():
@@ -40,9 +44,9 @@ def test_writes_self_contained_escaped_html(tmp_path):
     assert "não executa os testes" in content
 
 
-def test_prints_valid_json(capsys):
-    print_report(report(), as_json=True)
-
-    payload = json.loads(capsys.readouterr().out)
+def test_writes_valid_json(tmp_path):
+    output = write_json_report(report(), tmp_path / "report.json")
+    data = output.read_text(encoding="utf-8")
+    payload = json.loads(data)
     assert payload["repository"] == "o/r"
     assert payload["pull_requests"][0]["net_code_loc"] == 12
