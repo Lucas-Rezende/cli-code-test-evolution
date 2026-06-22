@@ -129,6 +129,32 @@ class TestGithubClient(unittest.TestCase):
         self.assertEqual(selected.pull_requests, [mock_pr])
         mock_repo.get_pulls.assert_called_once_with(state="closed")
 
+    def test_lista_ignora_pr_inexistente_e_continua(self):
+        mock_repo = MagicMock()
+        pull_2 = MagicMock(number=2, state="open")
+        pull_2.number = 2
+        pull_2.state = "open"
+
+        def get_pull(number):
+            if number == 2:
+                return pull_2
+            raise GithubException(404, {"message": "Not Found"})
+
+        mock_repo.get_pull.side_effect = get_pull
+
+        selected = select_pull_requests(
+            mock_repo,
+            "list",
+            [1, 2, 3],
+            "all",
+        )
+
+        self.assertEqual(
+            [pull.number for pull in selected.pull_requests],
+            [2],
+        )
+        self.assertEqual(selected.skipped, [1, 3])
+
     def test_get_file_content_sucesso(self):
         mock_repo = MagicMock()
         mock_content = MagicMock()

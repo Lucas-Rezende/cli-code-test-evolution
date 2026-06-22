@@ -44,12 +44,10 @@ def test_parses_list():
     assert parse_pr_list("1,2,3") == [1, 2, 3]
 
 
-def test_reject_parses_list():
+@pytest.mark.parametrize("value", ["", "1,", ",1", "A,B"])
+def test_reject_parses_list(value):
     with pytest.raises(RepositoryInputError):
-        parse_pr_list("")
-        parse_pr_list("1,")
-        parse_pr_list(",1")
-        parse_pr_list("A,B")
+        parse_pr_list(value)
 
 
 def test_selection_must_be_exclusive():
