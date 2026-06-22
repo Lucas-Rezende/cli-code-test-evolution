@@ -26,3 +26,7 @@ coverage.xml
 
 # Cache pytest
 .pytest_cache/
+
+# Arquivos de saída
+*.html
+*.json
