@@ -25,6 +25,7 @@ def _run_scan(
     repository: str,
     pr_number: int | None,
     pr_range: str | None,
+    pr_list: str | None,
     all_prs: bool,
     state: str,
     medium_threshold: int,
@@ -38,6 +39,7 @@ def _run_scan(
             reference.pr_number,
             pr_number,
             pr_range,
+            pr_list,
             all_prs,
         )
         report = scan_repository(
@@ -72,6 +74,11 @@ def scan(
         "--range",
         help="Intervalo inclusivo no formato START:END.",
     ),
+    pr_list: str | None = typer.Option(
+        None,
+        "--list",
+        help="Lista de PRs no formato PR1,PR2,...,PRn.",
+    ),
     all_prs: bool = typer.Option(False, "--all", help="Analisa todos os PRs."),
     state: str = typer.Option(
         "all",
@@ -103,6 +110,7 @@ def scan(
         repo,
         pr_number,
         pr_range,
+        pr_list,
         all_prs,
         state,
         medium_threshold,
@@ -123,6 +131,7 @@ def scan_repo(
     """Alias de compatibilidade para scan REPOSITORY --all."""
     _run_scan(
         repository,
+        None,
         None,
         None,
         True,

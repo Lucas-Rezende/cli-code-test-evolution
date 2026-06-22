@@ -58,10 +58,29 @@ def parse_pr_range(value: str) -> tuple[int, int]:
         raise RepositoryInputError("O intervalo de PRs é inválido.")
     return start, end
 
+def parse_pr_list(value: str) -> list[int]:
+    value = value.strip()
+    
+    if not value:
+        raise RepositoryInputError("A lista de PRs não pode estar vazia.")
+    
+    if not re.fullmatch(r"^\d+(?:,\d+)*$", value):
+        raise RepositoryInputError(
+            "A lista deve conter apenas números inteiros separados por vírgula (ex: 1,2,3)."
+        )
+    
+    pr_list = list(map(int, re.findall(r"\d+", value)))
+    
+    if any(pr < 1 for pr in pr_list):
+        raise RepositoryInputError("Os números dos PRs devem ser maiores que 0.")
+        
+    return pr_list
+
 def validate_selection(
     embedded_pr: int | None,
     pr_number: int | None,
     pr_range: str | None,
+    pr_list: str | None,
     all_prs: bool,
 ) -> tuple[str, int | tuple[int, int] | None]:
     selected = sum(
@@ -69,12 +88,13 @@ def validate_selection(
             embedded_pr is not None,
             pr_number is not None,
             pr_range is not None,
+            pr_list is not None,
             all_prs,
         ]
     )
     if selected != 1:
         raise RepositoryInputError(
-            "Escolha exatamente uma opção: URL de PR, --pr, --range ou --all."
+            "Escolha exatamente uma opção: URL de PR, --pr, --range, --list ou --all."
         )
     if embedded_pr is not None:
         return "pr", embedded_pr
@@ -84,4 +104,6 @@ def validate_selection(
         return "pr", pr_number
     if pr_range is not None:
         return "range", parse_pr_range(pr_range)
+    if pr_list is not None:
+        return "list", parse_pr_list(pr_list)
     return "all", None
