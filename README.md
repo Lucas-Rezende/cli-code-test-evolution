@@ -12,7 +12,7 @@ Após análise, a abordagem será focada em detectar Dívida de Testes em Pull R
 
 - **Python 3.10+:** linguagem utilizada no projeto.
 - **PyGithub:** consulta repositórios, Pull Requests, arquivos modificados, patches e conteúdos por meio da API do GitHub.
-- **Typer:** disponibiliza a interface de linha de comando `pr-debt`.
+- **Typer:** disponibiliza a interface de linha de comando `code-test-evo`.
 - **Rich:** formata tabelas e resultados exibidos no terminal.
 - **unidiff:** interpreta os patches dos Pull Requests e identifica linhas adicionadas e removidas.
 - **`ast` e `tokenize`:** módulos da biblioteca padrão usados para reconhecer código Python, comentários e docstrings.
@@ -75,38 +75,38 @@ O token deve ser real e válido.
 Um PR específico:
 
 ```bash
-pr-debt scan owner/repository --pr 418
+code-test-evo scan owner/repository --pr 418
 ```
 
 Um intervalo inclusivo de PRs:
 
 ```bash
-pr-debt scan owner/repository --range 280:290 --state closed
+code-test-evo scan owner/repository --range 280:290 --state closed
 ```
 
 Todos os PRs abertos:
 
 ```bash
-pr-debt scan owner/repository --all --state open
+code-test-evo scan owner/repository --all --state open
 ```
 
 Também é possível informar diretamente a URL de um PR:
 
 ```bash
-pr-debt scan https://github.com/owner/repository/pull/418
+code-test-evo scan https://github.com/owner/repository/pull/418
 ```
 
 O resultado é mostrado no terminal e salvo por padrão em
-`pr-debt-report.html`. Para escolher outro arquivo:
+`code-test-evo-report.html`. Para escolher outro arquivo:
 
 ```bash
-pr-debt scan owner/repository --pr 42 --output reports/pr-42.html
+code-test-evo scan owner/repository --pr 42 --output reports/pr-42.html
 ```
 
 No Windows, caso o ambiente não esteja ativado, use:
 
 ```powershell
-.\.venv\Scripts\pr-debt.exe scan Baekalfen/PyBoy --pr 418
+.\.venv\Scripts\code-test-evo.exe scan Baekalfen/PyBoy --pr 418
 ```
 
 ### 5. Execute os testes

@@ -1,3 +1,4 @@
+# cli_code_test_evolution/reporter.py
 from __future__ import annotations
 
 import json
@@ -7,7 +8,7 @@ from pathlib import Path
 from rich.console import Console
 from rich.table import Table
 
-from pr_debt_scanner.models import AnalysisReport, PullRequestMetrics
+from cli_code_test_evolution.models import AnalysisReport, PullRequestMetrics
 
 _RISK_LABELS = {
     "high": "Alto",

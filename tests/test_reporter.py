@@ -1,8 +1,8 @@
 import json
 
-from pr_debt_scanner.models import AnalysisReport, FileMetrics
-from pr_debt_scanner.analyzer import analyze_pr
-from pr_debt_scanner.reporter import print_report, write_html_report
+from cli_code_test_evolution.models import AnalysisReport, FileMetrics
+from cli_code_test_evolution.analyzer import analyze_pr
+from cli_code_test_evolution.reporter import print_report, write_html_report
 
 
 def report():

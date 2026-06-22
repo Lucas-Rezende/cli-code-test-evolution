@@ -4,7 +4,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pr-debt-scanner"
+name = "cli-code-test-evolution"
 version = "0.1.0"
 requires-python = ">=3.10"
 dependencies = [
@@ -22,4 +22,4 @@ dev = [
 ]
 
 [project.scripts]
-pr-debt = "pr_debt_scanner.main:app"
+code-test-evo = "cli_code_test_evolution.main:app"

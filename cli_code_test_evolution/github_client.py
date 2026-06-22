@@ -1,4 +1,4 @@
-# pr_debt_scanner/github_client.py
+# cli_code_test_evolution/github_client.py
 from __future__ import annotations
 
 import base64

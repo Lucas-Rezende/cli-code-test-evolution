@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 
 from github import Github, GithubException
 
-from pr_debt_scanner.github_client import (
+from cli_code_test_evolution.github_client import (
     GitHubClientError,
     get_file_content,
     get_github_client,
