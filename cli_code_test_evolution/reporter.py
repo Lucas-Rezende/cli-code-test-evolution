@@ -19,6 +19,7 @@ _RISK_LABELS = {
     "none": "Nenhum",
 }
 
+
 def _totals(report: AnalysisReport) -> dict[str, int]:
     prs = report.pull_requests
     return {
@@ -35,11 +36,8 @@ def _totals(report: AnalysisReport) -> dict[str, int]:
         "neutral": sum(item.classification == "neutral" for item in prs),
     }
 
-def print_report(report: AnalysisReport, *, as_json: bool = False) -> None:
-    if as_json:
-        print(json.dumps(report.to_dict(), ensure_ascii=False, indent=2))
-        return
 
+def print_report(report: AnalysisReport) -> None:
     console = Console()
     totals = _totals(report)
     console.print(
@@ -208,4 +206,12 @@ footer{{margin-top:36px;color:var(--muted);font-size:13px}}
   <footer>Gerado em {escape(report.generated_at)}. LOC efetivas ignoram linhas vazias, comentários e docstrings Python reconhecidas.</footer>
 </main></body></html>"""
     output_path.write_text(html, encoding="utf-8")
+    return output_path
+
+
+def write_json_report(report: AnalysisReport, output: str | Path) -> Path:
+    output_path = Path(output).expanduser().resolve()
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(report.to_dict(), f, ensure_ascii=False, indent=2)
+    
     return output_path

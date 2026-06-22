@@ -4,9 +4,15 @@ from __future__ import annotations
 from pathlib import Path
 
 import typer
+from typing import Optional
 
 from cli_code_test_evolution.github_client import GitHubClientError
-from cli_code_test_evolution.reporter import print_report, write_html_report
+from cli_code_test_evolution.reporter import (
+    print_report,
+    write_html_report,
+    write_json_report,
+)
+
 from cli_code_test_evolution.repository_parser import (
     RepositoryInputError,
     normalize_repository,
@@ -31,7 +37,7 @@ def _run_scan(
     medium_threshold: int,
     high_threshold: int,
     output: Path,
-    as_json: bool,
+    json_output: Path | None,
 ) -> None:
     try:
         reference = normalize_repository(repository)
@@ -50,14 +56,19 @@ def _run_scan(
             medium_threshold=medium_threshold,
             high_threshold=high_threshold,
         )
-        report_path = write_html_report(report, output)
+        html_report_path = write_html_report(report, output)
+        if json_output is not None:
+            json_report_path = write_json_report(report, json_output)
     except (RepositoryInputError, GitHubClientError, ValueError) as exc:
         typer.echo(f"Erro: {exc}", err=True)
         raise typer.Exit(code=2) from exc
 
-    print_report(report, as_json=as_json)
-    if not as_json:
-        typer.echo(f"\nRelatório HTML: {report_path}")
+    print_report(report)
+    typer.echo(f"\nRelatório HTML: {html_report_path}")
+
+    if json_output is not None:
+        typer.echo(f"Relatório JSON: {json_report_path}")
+
     if any(item.classification == "possible_debt" for item in report.pull_requests):
         raise typer.Exit(code=1)
 
@@ -68,7 +79,8 @@ def scan(
         ...,
         help="Repositório no formato owner/repo (ex: octocat/Hello-World) ou URL do repositório",
     ),
-    pr_number: int | None = typer.Option(None, "--pr", help="Um PR específico."),
+    pr_number: int | None = typer.Option(
+        None, "--pr", help="Um PR específico."),
     pr_range: str | None = typer.Option(
         None,
         "--range",
@@ -103,7 +115,11 @@ def scan(
         "-o",
         help="Caminho do relatório HTML.",
     ),
-    as_json: bool = typer.Option(False, "--json", help="Saída de terminal em JSON."),
+    json_output: Optional[Path] = typer.Option(
+        None,
+        "--json",
+        help="Caminho do relatório JSON. Caso não especificado, não gera o relatório em JSON.",
+    ),
 ) -> None:
     """Analisa um PR, um intervalo ou todos os PRs sem clonar o repositório."""
     _run_scan(
@@ -116,8 +132,9 @@ def scan(
         medium_threshold,
         high_threshold,
         output,
-        as_json,
+        json_output,
     )
+
 
 @app.command("scan-repo", hidden=True)
 def scan_repo(
@@ -125,8 +142,9 @@ def scan_repo(
     state: str = typer.Option("all", "--state"),
     medium_threshold: int = typer.Option(10, "--medium-threshold", min=1),
     high_threshold: int = typer.Option(50, "--high-threshold", min=2),
-    output: Path = typer.Option(Path("code-test-evo-report.html"), "--output", "-o"),
-    as_json: bool = typer.Option(False, "--json"),
+    output: Path = typer.Option(
+        Path("code-test-evo-report.html"), "--output", "-o"),
+    json_output: Path | None = typer.Option(None, "--json"),
 ) -> None:
     """Alias de compatibilidade para scan REPOSITORY --all."""
     _run_scan(
@@ -139,8 +157,9 @@ def scan_repo(
         medium_threshold,
         high_threshold,
         output,
-        as_json,
+        json_output,
     )
+
 
 if __name__ == "__main__":
     app()
