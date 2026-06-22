@@ -43,7 +43,7 @@ def get_repository(full_name: str, client: Github | None = None) -> Any:
 def select_pull_requests(
     repository: Any,
     selection_kind: str,
-    selection_value: int | tuple[int, int] | None,
+    selection_value: int | tuple[int, int] | list[int] | None,
     state: str,
 ) -> PullRequestSelection:
     if state not in {"open", "closed", "all"}:
@@ -74,7 +74,7 @@ def select_pull_requests(
         try:
             pr = repository.get_pull(number)
         except GithubException as exc:
-            if exc.status == 404 and selection_kind == "range":
+            if exc.status == 404 and selection_kind in {"range", "list"}:
                 skipped.append(number)
                 continue
             raise GitHubClientError(f"Não foi possível acessar o PR #{number}: {_message(exc)}") from exc

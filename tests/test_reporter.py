@@ -45,7 +45,7 @@ def test_writes_self_contained_escaped_html(tmp_path):
 
 
 def test_writes_valid_json(tmp_path):
-    output = write_json_report(report(), tmp_path / "report.json")
+    output = write_json_report(report(), tmp_path / "reports" / "report.json")
     data = output.read_text(encoding="utf-8")
     payload = json.loads(data)
     assert payload["repository"] == "o/r"

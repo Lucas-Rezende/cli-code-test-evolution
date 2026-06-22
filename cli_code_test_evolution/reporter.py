@@ -211,6 +211,7 @@ footer{{margin-top:36px;color:var(--muted);font-size:13px}}
 
 def write_json_report(report: AnalysisReport, output: str | Path) -> Path:
     output_path = Path(output).expanduser().resolve()
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(report.to_dict(), f, ensure_ascii=False, indent=2)
     

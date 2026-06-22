@@ -82,7 +82,7 @@ def validate_selection(
     pr_range: str | None,
     pr_list: str | None,
     all_prs: bool,
-) -> tuple[str, int | tuple[int, int] | None]:
+) -> tuple[str, int | tuple[int, int] | list[int] | None]:
     selected = sum(
         [
             embedded_pr is not None,
