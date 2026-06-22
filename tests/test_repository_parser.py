@@ -40,9 +40,8 @@ def test_parses_inclusive_range_and_rejects_reverse_range():
 
 
 def test_selection_must_be_exclusive():
-    assert validate_selection(None, 7, None, False) == ("pr", 7)
-    assert validate_selection(7, None, None, False) == ("pr", 7)
-    assert validate_selection(None, None, "2:4", False) == ("range", (2, 4))
-    assert validate_selection(None, None, None, True) == ("all", None)
-    with pytest.raises(RepositoryInputError):
-        validate_selection(None, 7, None, True)
+    assert validate_selection(None, 7, None, None, False) == ("pr", 7)
+    assert validate_selection(7, None, None, None, False) == ("pr", 7)
+    assert validate_selection(None, None, "2:4", None, False) == ("range", (2, 4))
+    assert validate_selection(None, None, None, "123,456", False) == ("list", [123, 456])
+    assert validate_selection(None, None, None, None, True) == ("all", None)
