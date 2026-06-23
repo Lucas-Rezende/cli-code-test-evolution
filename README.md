@@ -140,7 +140,7 @@ Uma combinação de diferentes modelos de linguagem foi empregada:
 
 A partir do contexto inicial (um sistema capaz de ler PRs e identificar a presença ou ausência de testes associados ao código modificado), a IA foi utilizada para estruturar um plano de desenvolvimento, assim como sugerir a arquitetura inicial (divisão de pastas, utilização de arquivos para controle de dependências). Isso incluiu um guia passo a passo, sugestões de fluxo de dados e estratégias para dividir as tarefas entre os integrantes do grupo. Como resposta final, a IA gerou um roadmap com o passo a passo detalhado de cada etapa para consolidar o projeto inicialmente.
 
-3. Desenvolvimento e integração
+2. Desenvolvimento e integração
 
 O desenvolvimento foi realizado com o auxílio da IA nos seguintes aspectos:
 - Inclusão de features: durante a evolução do sistema, a IA auxiliou na idealização e na implementação de novas funcionalidades, garantindo que as adições fossem compatíveis com a arquitetura estabelecida.
