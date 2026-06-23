@@ -122,3 +122,40 @@ Windows PowerShell:
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -q
 ```
+
+### 6. Uso de IA no desenvolvimento desta ferramenta
+
+A IA atuou como uma assistente contínua (estilo pair-programming), desde a concepção arquitetural até as rotinas de controle de versão.
+
+#### Modelos utilizados
+Uma combinação de diferentes modelos de linguagem foi empregada:
+
+- Google Gemini Pro 3.1: utilizado para tarefas de maior complexidade analítica, definição de regras de negócio e raciocínio estrutural.
+- Google Gemini Flash 3.5: empregado para consultas, iterações rápidas e respostas de baixa latência.
+- OpenAI ChatGPT GPT-4o/4o mini: utilizado majoritariamente para tirar dúvidas a respeito de características das bibliotecas utilizadas e como integrá-las ao projeto.
+- OpenAI GPT-5.5 com Codex: focado na geração direta, análise sintática e manipulação de funções e blocos de código, a fim de tornar o sistema mais coeso.
+
+#### Fases e áreas de aplicação dos modelos de IA
+1. Planejamento e arquitetura inicial
+
+A partir do contexto inicial (um sistema capaz de ler PRs e identificar a presença ou ausência de testes associados ao código modificado), a IA foi utilizada para estruturar um plano de desenvolvimento, assim como sugerir a arquitetura inicial (divisão de pastas, utilização de arquivos para controle de dependências). Isso incluiu um guia passo a passo, sugestões de fluxo de dados e estratégias para dividir as tarefas entre os integrantes do grupo. Como resposta final, a IA gerou um roadmap com o passo a passo detalhado de cada etapa para consolidar o projeto inicialmente.
+
+3. Desenvolvimento e integração
+
+O desenvolvimento foi realizado com o auxílio da IA nos seguintes aspectos:
+- Inclusão de features: durante a evolução do sistema, a IA auxiliou na idealização e na implementação de novas funcionalidades, garantindo que as adições fossem compatíveis com a arquitetura estabelecida.
+- Suporte técnico: os modelos serviram como uma base de conhecimento iterativa para tirar dúvidas específicas sobre a linguagem de programação base e as bibliotecas utilizadas para integração com a API do Github, para parsing e para facilitação da integração com CLI.
+- Correção de código (debugging): os modelos de IA auxiliaram na identificação, isolamento e resolução de erros de sintaxe, comportamentos inesperados, exceções lançadas pelas bibliotecas e gargalos lógicos durante a execução do programa.
+
+3. Qualidade e padronização do código
+
+A IA auxiliou na otimização da manutenibilidade do projeto. O código foi progressivamente reorganizado através de sugestões para:
+- Extração de funções longas para funções auxiliares, servindo também para reutilização.
+- Implementação de dataclasses para o mapeamento e transporte estruturado dos dados (ex: metadados do PR, arquivos alterados, status dos testes).
+- Geração de Testes: a IA foi utilizada para acelerar a escrita da suíte de testes do projeto, gerando casos de uso, mocks de respostas da API do Github e validações. Os modelos de IA foram essenciais especialmente para entender e implementar a utilização dos mocks.
+
+4. Versionamento e documentação
+
+De forma a manter o repositório o mais organizado, reastreável e documentado possível, a IA foi utilizada nas seguintes tarefas:
+- Nomenclatura de commits: a IA foi utilizada para ler os diffs das alterações locais e sugerir nomes e descrições de commits padronizados.
+- Docstring: a IA foi utilizada para gerar descrições dos métodos de forma a tornar mais claro e conciso o desenvolvimento entre os membros da equipe, de forma a facilitar a utilização das funções, métodos e classes criados pelos membros.
